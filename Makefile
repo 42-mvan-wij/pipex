@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/06/17 20:42:03 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/06/20 00:55:06 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/06/21 16:13:29 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CFLAGS += -g
 endif
 
 LIBS = -L$(dir $(LIBFT)) -lft
-SOURCES = src/pipex.c src/utils.c src/cmd.c
+SOURCES = src/pipex.c src/utils.c src/cmd.c src/cmd_args.c src/cmd_args2.c
 
 ifdef BONUS
 SOURCES +=
