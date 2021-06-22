@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/20 11:21:54 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/22 16:46:35 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <sys/types.h> // pid_t
 #include <errno.h>
 
-#include "../libft/libft.h"
+#include "libft.h"
 #include "pipex.h"
 
 /**

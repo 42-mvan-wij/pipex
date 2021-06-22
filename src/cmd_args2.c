@@ -6,12 +6,12 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/22 01:59:39 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/22 16:46:21 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "../libft/libft.h"
+#include "libft.h"
 
 static int	count_unescaped_quotes(char *str, char quote)
 {

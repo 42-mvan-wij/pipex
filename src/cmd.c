@@ -6,14 +6,14 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:57:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/22 02:02:36 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/22 16:46:29 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../libft/libft.h"
+#include "libft.h"
 #include "pipex.h"
 
 static char	*find_in_path(char *cmd, char **paths)
