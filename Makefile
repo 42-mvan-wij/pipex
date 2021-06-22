@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/06/17 20:42:03 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/06/21 16:13:29 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/06/22 01:32:01 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ endif
 
 LIBS = -L$(dir $(LIBFT)) -lft
 SOURCES = src/pipex.c src/utils.c src/cmd.c src/cmd_args.c src/cmd_args2.c
+HEADERS = src/pipex.h
 
 ifdef BONUS
 SOURCES +=
@@ -33,8 +34,7 @@ OBJDIR = obj
 
 OBJECTS = $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SOURCES:c=o))
 
-.PHONY = all clean fclean re debug bonus $(LIBFT)
-.PHONY: $(PHONY)
+.PHONY: all clean fclean re debug bonus
 
 all: $(NAME)
 
@@ -47,17 +47,17 @@ $(NAME): $(LIBFT) $(OBJECTS)
 bonus:
 	$(MAKE) BONUS=1
 
-debug:
+debug: fclean
 	$(MAKE) DEBUG=1
 
-$(LIBFT):
+$(LIBFT): $(addprefix $(dir $(LIBFT)),$(shell $(MAKE) -s -C $(dir $(LIBFT)) BONUS=1 sources))
 ifdef DEBUG
 	$(MAKE) -C $(dir $(LIBFT)) debug bonus
 else
 	$(MAKE) -C $(dir $(LIBFT)) bonus
 endif
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
