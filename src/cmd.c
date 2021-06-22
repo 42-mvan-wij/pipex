@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:57:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/21 16:12:34 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/22 02:02:36 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,13 @@ static char	**get_cmd_args(char *cmd, char **paths, char *pwd)
 	char	*cmd_path;
 
 	args = correct_args(cmd);
+	if (args == NULL)
+	{
+		write(STDERR_FILENO, "pipex: Cannot parse command: ", 29);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		write(STDERR_FILENO, "\n", 1);
+		exit(EXIT_FAILURE);
+	}
 	cmd_path = real_cmd(args[0], paths, pwd);
 	if (cmd_path == NULL)
 	{

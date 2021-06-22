@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/21 16:13:11 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/22 01:58:57 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 static char	**create_arg_array(char *cmd)
 {
 	int		i;
-	char	**arr;
 
 	if (cmd == NULL)
 		return (NULL);
@@ -28,8 +27,7 @@ static char	**create_arg_array(char *cmd)
 			i++;
 		cmd++;
 	}
-	arr = ft_calloc(i + 1, sizeof(char *));
-	return (arr);
+	return (ft_calloc(i + 1, sizeof(char *)));
 }
 
 static void	set_in_quote(int *in_quote, char c, int escaped)
@@ -66,7 +64,7 @@ static char	*fix_arg(char *arg)
 	if (quote != '\0')
 		new_arg = remove_unescaped_quotes(new_arg, quote);
 	new_arg2 = ft_str_filter(new_arg, "\\");
-	if (quote != '\0')
+	if (quote != '\0' && new_arg != NULL)
 		free(new_arg);
 	return (new_arg2);
 }
@@ -74,19 +72,21 @@ static char	*fix_arg(char *arg)
 static char	**fix_arg_arr(char **arg_arr)
 {
 	int		i;
-	char	*tmp_arg;
 	char	**new_arg_arr;
 
 	i = 0;
 	while (arg_arr[i + 1] != NULL)
 	{
-		tmp_arg = ft_substr(arg_arr[i], 0, arg_arr[i + 1] - arg_arr[i]);
-		arg_arr[i] = fix_arg(tmp_arg);
-		free(tmp_arg);
+		arg_arr[i + 1][0] = '\0';
+		(arg_arr[i + 1])++;
+		arg_arr[i] = fix_arg(arg_arr[i]);
+		if (arg_arr[i] == NULL)
+			return (free_arg_arr(arg_arr));
 		i++;
 	}
-	tmp_arg = ft_strdup(arg_arr[i]);
-	arg_arr[i] = fix_arg(tmp_arg);
+	arg_arr[i] = fix_arg(arg_arr[i]);
+	if (arg_arr[i] == NULL)
+		return (free_arg_arr(arg_arr));
 	new_arg_arr = remove_empty(arg_arr, i + 1);
 	free(arg_arr);
 	return (new_arg_arr);
