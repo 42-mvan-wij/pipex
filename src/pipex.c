@@ -88,6 +88,22 @@ static int	safe_fork(void)
 // 	chain_recurse(&cmds[1], pipefd.read, fd_out, envp);
 // }
 
+// static void	chain_recurse_start(char **cmds, char *f, int fd_out, char **envp)
+// {
+// 	t_pipefd	pipefd;
+// 	int			fd_in;
+
+// 	pipefd = create_pipe();
+// 	if (safe_fork() == 0)
+// 	{
+// 		close(pipefd.read);
+// 		fd_in = safe_open(f, O_RDONLY, 0);
+// 		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
+// 	}
+// 	close(pipefd.write);
+// 	chain_recurse(&cmds[1], pipefd.read, fd_out, envp);
+// }
+
 static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
 {
 	t_pipefd	pipefd;
@@ -111,6 +127,21 @@ static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
 		exec_cmd_fd_in_out(cmds[i], fd_in, fd_out, envp);
 	close(fd_in);
 	close(fd_out);
+
+static void	chain_itter_start(char **cmds, char *f_in, int fd_out, char **envp)
+{
+	t_pipefd	pipefd;
+	int			fd_in;
+
+	pipefd = create_pipe();
+	if (safe_fork() == 0)
+	{
+		close(pipefd.read);
+		fd_in = safe_open(f_in, O_RDONLY, 0);
+		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
+	}
+	close(pipefd.write);
+	chain_itter(&cmds[1], pipefd.read, fd_out, envp);
 }
 
 /**
@@ -121,24 +152,13 @@ static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
  */
 int	main(int argc, char **argv, char **envp)
 {
-	t_pipefd	pipefd;
-	int			fd;
-	char		buf[PX_BUF_SIZE];
-	int			read_len;
+	int			fd_out;
 
 	if (argc < 5)
 	{
 		write(STDERR_FILENO, "pipex: Wrong number of arguments\n", 33);
 		exit(EXIT_FAILURE);
 	}
-	fd = safe_open(argv[1], O_RDONLY, 0);
-	pipefd = create_pipe();
-	chain_itter(&argv[2], fd, pipefd.write, envp);
-	fd = safe_open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0740);
-	read_len = 1;
-	while (read_len > 0)
-	{
-		read_len = read(pipefd.read, buf, PX_BUF_SIZE);
-		write(fd, buf, read_len);
-	}
+	fd_out = safe_open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0740);
+	chain_itter_start(&argv[2], argv[1], fd_out, envp);
 }
