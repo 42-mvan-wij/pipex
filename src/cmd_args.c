@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/22 16:27:29 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/28 12:50:34 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char	**create_arg_array(char *cmd)
 
 	if (cmd == NULL)
 		return (NULL);
-	i = 0;
+	i = 1;
 	while (*cmd != '\0')
 	{
 		if (ft_isspace(*cmd))
