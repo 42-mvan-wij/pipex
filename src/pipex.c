@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/22 16:46:35 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/28 13:20:17 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,15 @@ static int	safe_fork(void)
 // static void	chain_recurse(char **cmds, int fd_in, int fd_out, char **envp)
 // {
 // 	t_pipefd	pipefd;
+//	pid_t		cpid;
 
 // 	if (cmds[2] == NULL)
 // 	{
-// 		if (safe_fork() == 0)
+//		cpid = safe_fork();
+// 		if (cpid == 0)
 // 			exec_cmd_fd_in_out(cmds[0], fd_in, fd_out, envp);
 // 		close(fd_out);
+//		wait_pid(cpid, NULL, 0);
 // 		return ;
 // 	}
 // 	pipefd = create_pipe();
@@ -107,6 +110,7 @@ static int	safe_fork(void)
 static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
 {
 	t_pipefd	pipefd;
+	pid_t		cpid;
 	int			i;
 
 	i = 0;
@@ -123,10 +127,13 @@ static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
 		fd_in = pipefd.read;
 		i++;
 	}
-	if (safe_fork() == 0)
+	cpid = safe_fork();
+	if (cpid == 0)
 		exec_cmd_fd_in_out(cmds[i], fd_in, fd_out, envp);
 	close(fd_in);
 	close(fd_out);
+	waitpid(cpid, NULL, 0);
+}
 
 static void	chain_itter_start(char **cmds, char *f_in, int fd_out, char **envp)
 {
