@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/28 13:20:17 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/06/29 17:48:35 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,47 +24,19 @@
 #include "pipex.h"
 
 /**
- * access:		check file accessibility
- * unlink:		delete file
- * pipe:		create pipe from one process to another
- * dup:			duplicate file descriptor
- * dup2:		duplicate file descriptor to specific new fd
- * execve:		exec executable (arg1) with args (arg2) and env (arg3)
- * fork:		create child process
+ * access:		check file accessibility								// DONE: error prot
+ * unlink:		delete file												//
+ * pipe:		create pipe from one process to another					// DONE: error prot
+ * dup:			duplicate file descriptor								//
+ * dup2:		duplicate file descriptor to specific new fd			// DONE: error prot
+ * execve:		exec executable (arg1) with args (arg2) and env (arg3)	// DONE: error prot
+ * fork:		create child process									// DONE: error prot
  * waitpid:		wait for change state of process
  * wait:		wait for change state of process
  * perror:		create error message for last system function
  * strerror:	also something
  */
-static int	safe_open(const char *filename, int oflag, int mode)
-{
-	int	fd;
 
-	fd = open(filename, oflag, mode);
-	if (fd == -1)
-	{
-		write(STDERR_FILENO, "pipex: open: ", 13);
-		ft_putstr_fd(strerror(errno), STDERR_FILENO);
-		write(STDERR_FILENO, ": ", 2);
-		ft_putstr_fd((char *)filename, STDERR_FILENO);
-		write(STDERR_FILENO, "\n", 1);
-		exit(EXIT_FAILURE);
-	}
-	return (fd);
-}
-
-static int	safe_fork(void)
-{
-	pid_t	cpid;
-
-	cpid = fork();
-	if (cpid == -1)
-	{
-		perror("pipex: fork");
-		exit(EXIT_FAILURE);
-	}
-	return (cpid);
-}
 
 // static void	chain_recurse(char **cmds, int fd_in, int fd_out, char **envp)
 // {
@@ -76,18 +48,18 @@ static int	safe_fork(void)
 //		cpid = safe_fork();
 // 		if (cpid == 0)
 // 			exec_cmd_fd_in_out(cmds[0], fd_in, fd_out, envp);
-// 		close(fd_out);
+// 		safe_close(fd_out);
 //		wait_pid(cpid, NULL, 0);
 // 		return ;
 // 	}
 // 	pipefd = create_pipe();
 // 	if (safe_fork() == 0)
 // 	{
-// 		close(pipefd.read);
+// 		safe_close(pipefd.read);
 // 		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
 // 	}
-// 	close(fd_in);
-// 	close(pipefd.write);
+// 	safe_close(fd_in);
+// 	safe_close(pipefd.write);
 // 	chain_recurse(&cmds[1], pipefd.read, fd_out, envp);
 // }
 
@@ -99,19 +71,87 @@ static int	safe_fork(void)
 // 	pipefd = create_pipe();
 // 	if (safe_fork() == 0)
 // 	{
-// 		close(pipefd.read);
+// 		safe_close(pipefd.read);
 // 		fd_in = safe_open(f, O_RDONLY, 0);
 // 		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
 // 	}
-// 	close(pipefd.write);
+// 	safe_close(pipefd.write);
 // 	chain_recurse(&cmds[1], pipefd.read, fd_out, envp);
 // }
 
-static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
+
+
+
+
+
+
+// static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
+// {
+// 	t_pipefd	pipefd;
+// 	pid_t		cpid;
+// 	int			i;
+
+// 	i = 0;
+// 	while (cmds[i + 2] != NULL)
+// 	{
+// 		pipefd = create_pipe();
+// 		if (safe_fork() == 0)
+// 		{
+// 			safe_close(pipefd.read);
+// 			exec_cmd_fd_in_out(cmds[i], fd_in, pipefd.write, envp);
+// 		}
+// 		safe_close(fd_in);
+// 		safe_close(pipefd.write);
+// 		fd_in = pipefd.read;
+// 		i++;
+// 	}
+// 	cpid = safe_fork();
+// 	if (cpid == 0)
+// 		exec_cmd_fd_in_out(cmds[i], fd_in, fd_out, envp);
+// 	safe_close(fd_in);
+// 	safe_close(fd_out);
+// 	waitpid(cpid, NULL, 0);
+// }
+
+// static void	chain_itter_start(char **cmds, char *f_in, int fd_out, char **envp)
+// {
+// 	t_pipefd	pipefd;
+// 	int			fd_in;
+
+// 	pipefd = create_pipe();
+// 	if (safe_fork() == 0)
+// 	{
+// 		safe_close(pipefd.read);
+// 		fd_in = safe_open(f_in, O_RDONLY, 0);
+// 		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
+// 	}
+// 	safe_close(pipefd.write);
+// 	chain_itter(&cmds[1], pipefd.read, fd_out, envp);
+// }
+
+
+
+static void	chain_itter_last(char *cmd, int fd_in, char *f_out, char **envp)
+{
+	pid_t	cpid;
+	int		fd_out;
+
+	cpid = safe_fork();
+	if (cpid == 0)
+	{
+		fd_out = safe_open(f_out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		exec_cmd_fd_in_out(cmd, fd_in, fd_out, envp);
+	}
+	safe_close(fd_in);
+	waitpid(cpid, NULL, 0);
+}
+
+static void	chain_itter(char **cmds, int fd_in, char *f_out, char **envp)
 {
 	t_pipefd	pipefd;
 	pid_t		cpid;
 	int			i;
+	int			fd_out;
 
 	i = 0;
 	while (cmds[i + 2] != NULL)
@@ -119,23 +159,18 @@ static void	chain_itter(char **cmds, int fd_in, int fd_out, char **envp)
 		pipefd = create_pipe();
 		if (safe_fork() == 0)
 		{
-			close(pipefd.read);
+			safe_close(pipefd.read);
 			exec_cmd_fd_in_out(cmds[i], fd_in, pipefd.write, envp);
 		}
-		close(fd_in);
-		close(pipefd.write);
+		safe_close(fd_in);
+		safe_close(pipefd.write);
 		fd_in = pipefd.read;
 		i++;
 	}
-	cpid = safe_fork();
-	if (cpid == 0)
-		exec_cmd_fd_in_out(cmds[i], fd_in, fd_out, envp);
-	close(fd_in);
-	close(fd_out);
-	waitpid(cpid, NULL, 0);
+	chain_itter_last(cmds[i], fd_in, f_out, envp);
 }
 
-static void	chain_itter_start(char **cmds, char *f_in, int fd_out, char **envp)
+static void	chain_itter_start(char **cmds, char *f_in, char *f_out, char **envp)
 {
 	t_pipefd	pipefd;
 	int			fd_in;
@@ -143,12 +178,12 @@ static void	chain_itter_start(char **cmds, char *f_in, int fd_out, char **envp)
 	pipefd = create_pipe();
 	if (safe_fork() == 0)
 	{
-		close(pipefd.read);
+		safe_close(pipefd.read);
 		fd_in = safe_open(f_in, O_RDONLY, 0);
 		exec_cmd_fd_in_out(cmds[0], fd_in, pipefd.write, envp);
 	}
-	close(pipefd.write);
-	chain_itter(&cmds[1], pipefd.read, fd_out, envp);
+	safe_close(pipefd.write);
+	chain_itter(&cmds[1], pipefd.read, f_out, envp);
 }
 
 /**
@@ -166,6 +201,5 @@ int	main(int argc, char **argv, char **envp)
 		write(STDERR_FILENO, "pipex: Wrong number of arguments\n", 33);
 		exit(EXIT_FAILURE);
 	}
-	fd_out = safe_open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0740);
-	chain_itter_start(&argv[2], argv[1], fd_out, envp);
+	chain_itter_start(&argv[2], argv[1], argv[argc - 1], envp);
 }
