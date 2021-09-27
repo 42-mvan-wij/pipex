@@ -52,7 +52,7 @@ static void	chain_last(char *cmd, int fd_in, char *f_out, char **envp)
 	}
 	safe_close(fd_in);
 	waitpid(cpid, NULL, 0);
-	free(prepared_cmd);
+	free_arg_arr(prepared_cmd);
 }
 
 static void	chain(char **cmds, int fd_in, char *f_out, char **envp)
@@ -76,7 +76,7 @@ static void	chain(char **cmds, int fd_in, char *f_out, char **envp)
 		safe_close(fd_in);
 		safe_close(pipefd.write);
 		waitpid(cpid, NULL, 0);
-		free(prepared_cmd);
+		free_arg_arr(prepared_cmd);
 		fd_in = pipefd.read;
 		i++;
 	}
@@ -101,7 +101,7 @@ static void	chain_start(char **cmds, char *f_in, char *f_out, char **envp)
 	}
 	safe_close(pipefd.write);
 	waitpid(cpid, NULL, 0);
-	free(prepared_cmd);
+	free_arg_arr(prepared_cmd);
 	chain(&cmds[1], pipefd.read, f_out, envp);
 }
 

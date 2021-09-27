@@ -40,7 +40,7 @@ char	*remove_unescaped_quotes(char *arg, char quote)
 	char	*new_arg;
 
 	count = count_unescaped_quotes(arg, quote);
-	new_arg = malloc((ft_strlen(arg) - count) * sizeof(char));
+	new_arg = malloc((ft_strlen(arg) - count + 1) * sizeof(char));
 	if (new_arg == NULL)
 		return (NULL);
 	i = 0;
