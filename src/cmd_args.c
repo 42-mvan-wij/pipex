@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/28 12:50:34 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/03 14:11:07 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ char	**correct_args(char *cmd)
 	in_quote = 0;
 	escaped = 0;
 	arg_arr = create_arg_array(cmd);
+	if (arg_arr == NULL)
+		return (NULL);
 	arg_arr[0] = cmd;
 	arg_i = 1;
 	i = 0;

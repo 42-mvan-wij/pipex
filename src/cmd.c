@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:57:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/29 17:09:00 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/03 15:42:06 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,6 @@ static char	*find_in_path(char *cmd, char **paths)
 	return (NULL);
 }
 
-// static char	*real_cmd(char *cmd, char **paths, char *pwd)
-// {
-// 	char	*pwd_slash;
-// 	char	*ret;
-
-// 	if (cmd[0] == '/')
-// 	{
-// 		if (access(cmd, X_OK) == 0)
-// 			return (cmd);
-// 		return (NULL);
-// 	}
-// 	if (ft_strchr(cmd, '/') != NULL)
-// 	{
-// 		pwd_slash = ft_strjoin(pwd, "/");
-// 		ret = ft_strjoin(pwd_slash, cmd);
-// 		free(pwd_slash);
-// 		if (access(ret, X_OK) == 0)
-// 			return (ret);
-// 		return (NULL);
-// 	}
-// 	return (find_in_path(cmd, paths));
-// }
-
 static char	*real_cmd(char *cmd, char **paths, char *pwd)
 {
 	char	*pwd_slash;
@@ -81,10 +58,9 @@ static char	*real_cmd(char *cmd, char **paths, char *pwd)
 	return (find_in_path(cmd, paths));
 }
 
-static char	**get_cmd_args(char *cmd, char **paths, char *pwd)
+char	**get_cmd_args(char *cmd)
 {
 	char	**args;
-	char	*cmd_path;
 
 	args = correct_args(cmd);
 	if (args == NULL)
@@ -93,7 +69,15 @@ static char	**get_cmd_args(char *cmd, char **paths, char *pwd)
 		ft_putendl_fd(cmd, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	cmd_path = real_cmd(args[0], paths, pwd);
+	return (args);
+}
+
+void	exec_cmd(char **args, char **envp)
+{
+	char	*cmd_path;
+
+	cmd_path = real_cmd(args[0],
+			ft_split(get_env_var("PATH", envp), ':'), get_env_var("PWD", envp));
 	if (cmd_path == NULL)
 	{
 		write(STDERR_FILENO, "Command not found: ", 26);
@@ -102,39 +86,27 @@ static char	**get_cmd_args(char *cmd, char **paths, char *pwd)
 	}
 	if (access(cmd_path, X_OK) == -1)
 	{
-		perror(args[0]);
+		perror(cmd_path);
 		exit(EXIT_FAILURE);
 	}
-	args[0] = cmd_path;
-	return (args);
-}
-
-void	exec_cmd(char *cmd, char **envp)
-{
-	char	**args;
-
-	args = get_cmd_args(
-			cmd,
-			ft_split(get_env_var("PATH", envp), ':'),
-			get_env_var("PWD", envp));
-	if (execve(args[0], args, envp) == -1)
+	if (execve(cmd_path, args, envp) == -1)
 	{
 		perror("pipex: execve");
 		exit(EXIT_FAILURE);
 	}
 }
 
-void	exec_cmd_fd_in_out(char *cmd, int stdin_fd, int stdout_fd, char **envp)
+void	exec_cmd_fd_in_out(char **args, int in_fd, int out_fd, char **envp)
 {
-	if (dup2(stdin_fd, STDIN_FILENO) == -1)
+	if (dup2(in_fd, STDIN_FILENO) == -1)
 	{
 		perror("pipex: dup2");
 		exit(EXIT_FAILURE);
 	}
-	if (dup2(stdout_fd, STDOUT_FILENO) == -1)
+	if (dup2(out_fd, STDOUT_FILENO) == -1)
 	{
 		perror("pipex: dup2");
 		exit(EXIT_FAILURE);
 	}
-	exec_cmd(cmd, envp);
+	exec_cmd(args, envp);
 }

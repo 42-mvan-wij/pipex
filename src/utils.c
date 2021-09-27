@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:44:06 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/29 17:09:44 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/03 12:42:04 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <string.h>
 #include "libft.h"
 #include "pipex.h"
 
-static int	safe_open(const char *filename, int oflag, int mode)
+int	safe_open(const char *filename, int oflag, int mode)
 {
 	int	fd;
 
@@ -33,7 +36,7 @@ static int	safe_open(const char *filename, int oflag, int mode)
 	return (fd);
 }
 
-static int	safe_fork(void)
+int	safe_fork(void)
 {
 	pid_t	cpid;
 
