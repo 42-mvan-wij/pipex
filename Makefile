@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/09/27 14:56:03 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/09/27 15:38:58 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/09/27 16:25:28 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,16 +24,19 @@ ifdef DEBUG
 CFLAGS	+= -g
 endif
 
+# Common
 LIBS	= -L$(dir $(LIBFT)) -lft
 HEADERS	= src/pipex.h libft/libft.h
 SOURCES	= src/pipex.c src/utils.c src/cmd.c src/cmd_args.c src/cmd_args2.c
 
 ifndef BONUS
+# Not Bonus
 SOURCES	+=
 HEADERS	+=
 CFLAGS	+=
 LIBS	+=
 else
+# Bonus
 NAME	= $(NAME_BONUS)
 SOURCES	+=
 HEADERS	+=
