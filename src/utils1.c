@@ -1,24 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   utils1.c                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:44:06 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/03 12:42:04 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 18:44:27 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <fcntl.h>
-#include <string.h>
-#include "libft.h"
-#include "pipex.h"
 
 int	safe_open(const char *filename, int oflag, int mode)
 {
@@ -27,10 +22,8 @@ int	safe_open(const char *filename, int oflag, int mode)
 	fd = open(filename, oflag, mode);
 	if (fd == -1)
 	{
-		write(STDERR_FILENO, "pipex: open: ", 13);
-		ft_putstr_fd(strerror(errno), STDERR_FILENO);
-		write(STDERR_FILENO, ": ", 2);
-		ft_putendl_fd((char *)filename, STDERR_FILENO);
+		write(STDERR_FILENO, "pipex: ", 7);
+		perror(filename);
 		exit(EXIT_FAILURE);
 	}
 	return (fd);
@@ -56,40 +49,4 @@ void	safe_close(int fd)
 		perror("pipex: close");
 		exit(EXIT_FAILURE);
 	}
-}
-
-t_pipefd	create_pipe(void)
-{
-	t_pipefd	res;
-	int			pipefd[2];
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	res.read = pipefd[0];
-	res.write = pipefd[1];
-	return (res);
-}
-
-char	*get_env_var(char *var, char *envp[])
-{
-	const int	len = ft_strlen(var) + 1;
-	char		*var_equals_sign;
-	int			i;
-
-	var_equals_sign = ft_strjoin(var, "=");
-	i = 0;
-	while (envp[i] != NULL)
-	{
-		if (ft_strncmp(var_equals_sign, envp[i], len) == 0)
-		{
-			free(var_equals_sign);
-			return (envp[i] + len);
-		}
-		i++;
-	}
-	free(var_equals_sign);
-	return (NULL);
 }
