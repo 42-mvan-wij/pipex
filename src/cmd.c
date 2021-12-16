@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:57:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/12/16 15:39:19 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 18:50:32 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,14 @@ void	exec_cmd(char **args, char **envp)
 	cmd_path = real_cmd(args[0], ft_split(get_env_var("PATH", envp), ':'));
 	if (cmd_path == NULL)
 	{
-		write(STDERR_FILENO, "Command not found: ", 26);
-		ft_putendl_fd(args[0], STDERR_FILENO);
+		write(STDERR_FILENO, "pipex: ", 7);
+		ft_putstr_fd(args[0], STDERR_FILENO);
+		write(STDERR_FILENO, ": Command not found\n", 20);
 		exit(EXIT_FAILURE);
 	}
 	if (access(cmd_path, X_OK) == -1)
 	{
+		write(STDERR_FILENO, "pipex: ", 7);
 		perror(cmd_path);
 		exit(EXIT_FAILURE);
 	}

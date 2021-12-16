@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/12/16 15:35:36 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 18:51:35 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 // access, unlink, close, read, write, pipe, dup, dup2, execve, fork
 #include <fcntl.h> // open
 #include <stdlib.h> // malloc, free, exit
-#include <sys/wait.h> // waitpid, wait
-#include <stdio.h> // perror
-#include <string.h> // strerror
-#include <sys/types.h> // pid_t
-#include <errno.h>
 
 #include "libft.h"
 #include "pipex.h"
@@ -150,5 +145,6 @@ int	main(int argc, char **argv, char **envp)
 		free(argv_dup[argc - 1]);
 	}
 	free(argv_dup);
+	// system("leaks pipex");
 	return (EXIT_SUCCESS);
 }
