@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/12/16 18:51:35 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 18:54:29 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,5 @@ int	main(int argc, char **argv, char **envp)
 		free(argv_dup[argc - 1]);
 	}
 	free(argv_dup);
-	// system("leaks pipex");
 	return (EXIT_SUCCESS);
 }
