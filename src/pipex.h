@@ -6,12 +6,16 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:46:10 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/03 15:41:48 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/14 13:32:59 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
+
+# ifndef PIPEX_BONUS
+#  define PIPEX_BONUS 0
+# endif
 
 typedef struct s_pipefd {
 	int	read;

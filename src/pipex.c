@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/12/16 12:18:47 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 15:35:36 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	chain_last(char *cmd, int fd_in, char *f_out, char **envp)
 	int		fd_out;
 	char	**prepared_cmd;
 
-	prepared_cmd = get_cmd_args(cmd);
+	prepared_cmd = ft_split(cmd, ' ');
 	if (safe_fork() == 0)
 	{
 		fd_out = safe_open(f_out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -62,7 +62,7 @@ static void	chain(char **cmds, int fd_in, char *f_out, char **envp)
 	while (cmds[i + 2] != NULL)
 	{
 		pipefd = create_pipe();
-		prepared_cmd = get_cmd_args(cmds[i]);
+		prepared_cmd = ft_split(cmds[i], ' ');
 		if (safe_fork() == 0)
 		{
 			safe_close(pipefd.read);
@@ -84,7 +84,7 @@ static void	chain_start(char **cmds, char *f_in, char *f_out, char **envp)
 	char		**prepared_cmd;
 
 	pipefd = create_pipe();
-	prepared_cmd = get_cmd_args(cmds[0]);
+	prepared_cmd = ft_split(cmds[0], ' ');
 	if (safe_fork() == 0)
 	{
 		safe_close(pipefd.read);
@@ -131,7 +131,7 @@ int	main(int argc, char **argv, char **envp)
 	char	**argv_dup;
 	int		i;
 
-	if (argc < 5)
+	if (argc < 5 || (!PIPEX_BONUS && argc > 5))
 	{
 		write(STDERR_FILENO, "pipex: Wrong number of arguments\n", 33);
 		exit(EXIT_FAILURE);

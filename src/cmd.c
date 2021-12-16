@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/18 12:57:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/03 15:42:06 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 15:39:19 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,43 +41,18 @@ static char	*find_in_path(char *cmd, char **paths)
 	return (NULL);
 }
 
-static char	*real_cmd(char *cmd, char **paths, char *pwd)
+static char	*real_cmd(char *cmd, char **paths)
 {
-	char	*pwd_slash;
-	char	*ret;
-
-	if (cmd[0] == '/')
-		return (cmd);
 	if (ft_strchr(cmd, '/') != NULL)
-	{
-		pwd_slash = ft_strjoin(pwd, "/");
-		ret = ft_strjoin(pwd_slash, cmd);
-		free(pwd_slash);
-		return (ret);
-	}
+		return (cmd);
 	return (find_in_path(cmd, paths));
-}
-
-char	**get_cmd_args(char *cmd)
-{
-	char	**args;
-
-	args = correct_args(cmd);
-	if (args == NULL)
-	{
-		write(STDERR_FILENO, "Cannot parse command: ", 29);
-		ft_putendl_fd(cmd, STDERR_FILENO);
-		exit(EXIT_FAILURE);
-	}
-	return (args);
 }
 
 void	exec_cmd(char **args, char **envp)
 {
 	char	*cmd_path;
 
-	cmd_path = real_cmd(args[0],
-			ft_split(get_env_var("PATH", envp), ':'), get_env_var("PWD", envp));
+	cmd_path = real_cmd(args[0], ft_split(get_env_var("PATH", envp), ':'));
 	if (cmd_path == NULL)
 	{
 		write(STDERR_FILENO, "Command not found: ", 26);
