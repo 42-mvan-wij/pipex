@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/17 20:49:03 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/03 16:19:15 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 12:18:47 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,16 @@
 
 static void	chain_last(char *cmd, int fd_in, char *f_out, char **envp)
 {
-	pid_t	cpid;
 	int		fd_out;
 	char	**prepared_cmd;
 
 	prepared_cmd = get_cmd_args(cmd);
-	cpid = safe_fork();
-	if (cpid == 0)
+	if (safe_fork() == 0)
 	{
 		fd_out = safe_open(f_out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		exec_cmd_fd_in_out(prepared_cmd, fd_in, fd_out, envp);
 	}
 	safe_close(fd_in);
-	waitpid(cpid, NULL, 0);
 	free_arg_arr(prepared_cmd);
 }
 
@@ -59,7 +56,6 @@ static void	chain(char **cmds, int fd_in, char *f_out, char **envp)
 {
 	t_pipefd	pipefd;
 	int			i;
-	pid_t		cpid;
 	char		**prepared_cmd;
 
 	i = 0;
@@ -67,15 +63,13 @@ static void	chain(char **cmds, int fd_in, char *f_out, char **envp)
 	{
 		pipefd = create_pipe();
 		prepared_cmd = get_cmd_args(cmds[i]);
-		cpid = safe_fork();
-		if (cpid == 0)
+		if (safe_fork() == 0)
 		{
 			safe_close(pipefd.read);
 			exec_cmd_fd_in_out(prepared_cmd, fd_in, pipefd.write, envp);
 		}
 		safe_close(fd_in);
 		safe_close(pipefd.write);
-		waitpid(cpid, NULL, 0);
 		free_arg_arr(prepared_cmd);
 		fd_in = pipefd.read;
 		i++;
@@ -87,20 +81,17 @@ static void	chain_start(char **cmds, char *f_in, char *f_out, char **envp)
 {
 	t_pipefd	pipefd;
 	int			fd_in;
-	pid_t		cpid;
 	char		**prepared_cmd;
 
 	pipefd = create_pipe();
 	prepared_cmd = get_cmd_args(cmds[0]);
-	cpid = safe_fork();
-	if (cpid == 0)
+	if (safe_fork() == 0)
 	{
 		safe_close(pipefd.read);
 		fd_in = safe_open(f_in, O_RDONLY, 0);
 		exec_cmd_fd_in_out(prepared_cmd, fd_in, pipefd.write, envp);
 	}
 	safe_close(pipefd.write);
-	waitpid(cpid, NULL, 0);
 	free_arg_arr(prepared_cmd);
 	chain(&cmds[1], pipefd.read, f_out, envp);
 }
@@ -138,6 +129,7 @@ static char	**dup_arr(char **arr, int len)
 int	main(int argc, char **argv, char **envp)
 {
 	char	**argv_dup;
+	int		i;
 
 	if (argc < 5)
 	{
@@ -146,6 +138,12 @@ int	main(int argc, char **argv, char **envp)
 	}
 	argv_dup = dup_arr(&argv[1], argc - 1);
 	chain_start(&argv_dup[1], argv_dup[0], argv_dup[argc - 2], envp);
+	i = argc - 3;
+	while (i > 0)
+	{
+		i--;
+		wait(NULL);
+	}
 	while (argc > 1)
 	{
 		argc--;
@@ -153,5 +151,4 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free(argv_dup);
 	return (EXIT_SUCCESS);
-	// chain_start(&argv[2], argv[1], argv[argc - 1], envp);
 }
