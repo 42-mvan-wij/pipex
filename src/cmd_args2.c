@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/22 16:46:21 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/14 13:12:26 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	count_unescaped_quotes(char *str, char quote)
 	count = 0;
 	while (str[i] != '\0')
 	{
-		escaped = !escaped && (str[i] == '\\');
+		escaped = (!escaped && (str[i] == '\\'));
 		if (!escaped && str[i] == quote)
 			count++;
 		i++;
@@ -47,7 +47,7 @@ char	*remove_unescaped_quotes(char *arg, char quote)
 	escaped = 0;
 	while (*arg != '\0')
 	{
-		escaped = !escaped && (*arg == '\\');
+		escaped = (!escaped && (*arg == '\\'));
 		if (escaped || *arg != quote)
 		{
 			new_arg[i] = *arg;

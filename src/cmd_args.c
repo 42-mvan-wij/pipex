@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/21 15:50:27 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/03 14:11:07 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/12/16 12:19:14 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char	*fix_arg(char *arg)
 	escaped = 0;
 	while (arg[i] != '\0' && quote == '\0')
 	{
-		escaped = !escaped && (arg[i] == '\\');
+		escaped = (!escaped && (arg[i] == '\\'));
 		if (!escaped && (arg[i] == '\'' || arg[i] == '"'))
 			quote = arg[i];
 		i++;
@@ -116,7 +116,7 @@ char	**correct_args(char *cmd)
 			arg_i++;
 		}
 		set_in_quote(&in_quote, cmd[i], escaped);
-		escaped = !escaped && (cmd[i] == '\\');
+		escaped = (!escaped && (cmd[i] == '\\'));
 		i++;
 	}
 	return (fix_arg_arr(arg_arr));
