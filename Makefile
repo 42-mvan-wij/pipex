@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/09/27 14:56:03 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/12/16 17:12:24 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/12/16 19:02:38 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,14 +33,14 @@ ifndef BONUS
 # Not Bonus
 SOURCES	+=
 HEADERS	+=
-CFLAGS	+= -DPIPEX_BONUS=1
+CFLAGS	+=
 LIBS	+=
 else
 # Bonus
 NAME	= $(NAME_BONUS)
 SOURCES	+=
 HEADERS	+=
-CFLAGS	+=
+CFLAGS	+= -DPIPEX_BONUS=1
 LIBS	+=
 endif
 
